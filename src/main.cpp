@@ -1,6 +1,13 @@
 #include <Arduino.h>
 #include "config.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+
+// ===== FUNCTION PROTOTYPES =====
+void printTaskStats();
+
 // ===== TASK HANDLES =====
 TaskHandle_t MotorTask;
 TaskHandle_t SensorTask;
@@ -14,7 +21,7 @@ void MotorControlTask(void *pvParameters)
 {
     while (true)
     {
-        Serial.println("Motor Control Task Running");
+        Serial.println("[Core1] Motor Control Task Running");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
@@ -25,8 +32,8 @@ void SensorTaskFunction(void *pvParameters)
 {
     while (true)
     {
-        Serial.println("Sensor Task Running");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        Serial.println("[Core1] Sensor Task Running");
+        vTaskDelay(1500 / portTICK_PERIOD_MS);
     }
 }
 
@@ -36,8 +43,8 @@ void ActuatorTaskFunction(void *pvParameters)
 {
     while (true)
     {
-        Serial.println("Actuator Task Running");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        Serial.println("[Core1] Actuator Task Running");
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }
 
@@ -47,8 +54,8 @@ void CommunicationTaskFunction(void *pvParameters)
 {
     while (true)
     {
-        Serial.println("Communication Task Running");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        Serial.println("[Core0] Communication Task Running");
+        vTaskDelay(2500 / portTICK_PERIOD_MS);
     }
 }
 
@@ -58,8 +65,8 @@ void SystemMonitorTaskFunction(void *pvParameters)
 {
     while (true)
     {
-        Serial.println("System Monitor Running");
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        Serial.println("[Core0] System Monitor Running");
+        vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
 }
 
