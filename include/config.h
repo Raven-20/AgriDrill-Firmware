@@ -1,9 +1,13 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-// ===== MOTOR DRIVER =====
-#define MOTOR_LEFT_PWM 25
-#define MOTOR_RIGHT_PWM 26
+// ===== LEFT MOTOR (BTS7960) =====
+#define MOTOR_LEFT_RPWM 25
+#define MOTOR_LEFT_LPWM 13
+
+// ===== RIGHT MOTOR (BTS7960) =====
+#define MOTOR_RIGHT_RPWM 26
+#define MOTOR_RIGHT_LPWM 12
 
 // ===== ULTRASONIC SENSOR =====
 #define ULTRASONIC_TRIG 33
@@ -18,5 +22,15 @@
 #define STEPPER_IN2 19
 #define STEPPER_IN3 21
 #define STEPPER_IN4 22
+
+// ===== PWM SETTINGS =====
+#define PWM_FREQ 20000
+#define PWM_RESOLUTION 8
+
+// ===== PWM CHANNELS =====
+#define LEFT_RPWM_CHANNEL 0
+#define LEFT_LPWM_CHANNEL 1
+#define RIGHT_RPWM_CHANNEL 2
+#define RIGHT_LPWM_CHANNEL 3
 
 #endif
