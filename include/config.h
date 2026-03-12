@@ -38,6 +38,10 @@
 #define STEPPER_IN3 21
 #define STEPPER_IN4 22
 
+// Stepper configuration
+#define STEPS_PER_REV 2048
+#define STEPS_PER_CELL 256
+
 
 // ==================================================
 // PWM SETTINGS

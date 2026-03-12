@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "config.h"
+#include "stepper_control.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -16,6 +17,7 @@ void SystemMonitorTaskFunction(void *pvParameters);
 TaskHandle_t MotorTaskHandle;
 TaskHandle_t SensorTaskHandle;
 TaskHandle_t ActuatorTaskHandle;
+TaskHandle_t StepperTaskHandle;
 TaskHandle_t CommunicationTaskHandle;
 TaskHandle_t SystemMonitorTaskHandle;
 
@@ -149,6 +151,15 @@ void setup()
         &ActuatorTaskHandle,
         1);
 
+    xTaskCreatePinnedToCore(
+        StepperTask,
+        "Stepper Task",
+        4096,
+        NULL,
+        1,
+        &StepperTaskHandle,
+        1);   
+        
     xTaskCreatePinnedToCore(
         CommunicationTaskFunction,
         "CommunicationTask",
