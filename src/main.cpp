@@ -13,11 +13,11 @@ void CommunicationTaskFunction(void *pvParameters);
 void SystemMonitorTaskFunction(void *pvParameters);
 
 // ===== TASK HANDLES =====
-TaskHandle_t MotorTask;
-TaskHandle_t SensorTask;
-TaskHandle_t ActuatorTask;
-TaskHandle_t CommunicationTask;
-TaskHandle_t SystemMonitorTask;
+TaskHandle_t MotorTaskHandle;
+TaskHandle_t SensorTaskHandle;
+TaskHandle_t ActuatorTaskHandle;
+TaskHandle_t CommunicationTaskHandle;
+TaskHandle_t SystemMonitorTaskHandle;
 
 
 // ================= SENSOR TASK =================
@@ -26,7 +26,7 @@ void SensorTaskFunction(void *pvParameters)
     while (true)
     {
         Serial.println("[Core1] Sensor Task Running");
-        vTaskDelay(1500 / portTICK_PERIOD_MS);
+        vTaskDelay(pdMS_TO_TICKS(1500));
     }
 }
 
@@ -34,10 +34,40 @@ void SensorTaskFunction(void *pvParameters)
 // ================= ACTUATOR TASK =================
 void ActuatorTaskFunction(void *pvParameters)
 {
+    Serial.println("Actuator Task Started");
+
+    pinMode(ACT_EN, OUTPUT);
+    pinMode(LIMIT_SWITCH_PIN, INPUT_PULLUP);
+
+    digitalWrite(ACT_EN, HIGH);
+
     while (true)
     {
-        Serial.println("[Core1] Actuator Task Running");
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        Serial.println("Extending actuator...");
+        ledcWrite(ACT_RPWM_CHANNEL, 180);
+        ledcWrite(ACT_LPWM_CHANNEL, 0);
+
+        vTaskDelay(pdMS_TO_TICKS(3000));
+
+        Serial.println("Stopping actuator");
+        ledcWrite(ACT_RPWM_CHANNEL, 0);
+        ledcWrite(ACT_LPWM_CHANNEL, 0);
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
+
+        Serial.println("Retracting actuator...");
+        ledcWrite(ACT_RPWM_CHANNEL, 0);
+        ledcWrite(ACT_LPWM_CHANNEL, 180);
+
+        vTaskDelay(pdMS_TO_TICKS(3000));
+
+        if (digitalRead(LIMIT_SWITCH_PIN) == LOW)
+        {
+            Serial.println("Limit switch reached. Full retraction confirmed.");
+            ledcWrite(ACT_LPWM_CHANNEL, 0);
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 
@@ -48,7 +78,7 @@ void CommunicationTaskFunction(void *pvParameters)
     while (true)
     {
         Serial.println("[Core0] Communication Task Running");
-        vTaskDelay(2500 / portTICK_PERIOD_MS);
+        vTaskDelay(pdMS_TO_TICKS(2500));
     }
 }
 
@@ -59,7 +89,7 @@ void SystemMonitorTaskFunction(void *pvParameters)
     while (true)
     {
         Serial.println("[Core0] System Monitor Running");
-        vTaskDelay(3000 / portTICK_PERIOD_MS);
+        vTaskDelay(pdMS_TO_TICKS(3000));
     }
 }
 
@@ -68,7 +98,7 @@ void setup()
 {
     Serial.begin(115200);
 
-    // ===== PWM SETUP (RUNS ONCE) =====
+    // ===== MOTOR PWM SETUP =====
     ledcSetup(LEFT_RPWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
     ledcAttachPin(MOTOR_LEFT_RPWM, LEFT_RPWM_CHANNEL);
 
@@ -81,6 +111,15 @@ void setup()
     ledcSetup(RIGHT_LPWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
     ledcAttachPin(MOTOR_RIGHT_LPWM, RIGHT_LPWM_CHANNEL);
 
+
+    // ===== ACTUATOR PWM SETUP =====
+    ledcSetup(ACT_RPWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
+    ledcAttachPin(ACTUATOR_RPWM, ACT_RPWM_CHANNEL);
+
+    ledcSetup(ACT_LPWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
+    ledcAttachPin(ACTUATOR_LPWM, ACT_LPWM_CHANNEL);
+
+
     // ===== CREATE TASKS =====
 
     xTaskCreatePinnedToCore(
@@ -89,25 +128,25 @@ void setup()
         4096,
         NULL,
         2,
-        &MotorTask,
+        &MotorTaskHandle,
         1);
 
     xTaskCreatePinnedToCore(
         SensorTaskFunction,
         "SensorTask",
-        4096,
+        2048,
         NULL,
         2,
-        &SensorTask,
+        &SensorTaskHandle,
         1);
 
     xTaskCreatePinnedToCore(
         ActuatorTaskFunction,
         "ActuatorTask",
-        4096,
+        2048,
         NULL,
-        2,
-        &ActuatorTask,
+        1,
+        &ActuatorTaskHandle,
         1);
 
     xTaskCreatePinnedToCore(
@@ -116,7 +155,7 @@ void setup()
         4096,
         NULL,
         1,
-        &CommunicationTask,
+        &CommunicationTaskHandle,
         0);
 
     xTaskCreatePinnedToCore(
@@ -125,7 +164,7 @@ void setup()
         4096,
         NULL,
         1,
-        &SystemMonitorTask,
+        &SystemMonitorTaskHandle,
         0);
 }
 
