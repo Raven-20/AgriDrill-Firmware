@@ -7,11 +7,12 @@
 #define MOTOR_LEFT_RPWM 25
 #define MOTOR_LEFT_LPWM 13
 
+
 // ==================================================
 // RIGHT MOTOR (BTS7960)
 // ==================================================
 #define MOTOR_RIGHT_RPWM 26
-#define MOTOR_RIGHT_LPWM 12
+#define MOTOR_RIGHT_LPWM 17   
 
 
 // ==================================================
@@ -38,7 +39,6 @@
 #define STEPPER_IN3 21
 #define STEPPER_IN4 22
 
-// Stepper configuration
 #define STEPS_PER_REV 2048
 #define STEPS_PER_CELL 256
 
