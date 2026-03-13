@@ -1,11 +1,13 @@
 #include <Arduino.h>
 #include "config.h"
-#include "stepper_control.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
 #include "motor_task.h"
+#include "stepper_control.h"
+#include "ultrasonic.h"
+#include "pins.h"
+#include <ESP32Servo.h>
+
 
 // ===== FUNCTION PROTOTYPES =====
 void SensorTaskFunction(void *pvParameters);
@@ -22,13 +24,42 @@ TaskHandle_t CommunicationTaskHandle;
 TaskHandle_t SystemMonitorTaskHandle;
 
 
+Ultrasonic ultrasonic(5, 18);
+Servo scanServo;
+
+int leftAngle = 45;
+int centerAngle = 90;
+int rightAngle = 135;
+
 // ================= SENSOR TASK =================
 void SensorTaskFunction(void *pvParameters)
 {
+    ultrasonic.begin();
+    scanServo.attach(19);
+
     while (true)
     {
-        Serial.println("[Core1] Sensor Task Running");
-        vTaskDelay(pdMS_TO_TICKS(1500));
+        scanServo.write(leftAngle);
+        vTaskDelay(pdMS_TO_TICKS(200));
+        long leftDist = ultrasonic.read();
+
+        scanServo.write(centerAngle);
+        vTaskDelay(pdMS_TO_TICKS(200));
+        long centerDist = ultrasonic.read();
+
+        scanServo.write(rightAngle);
+        vTaskDelay(pdMS_TO_TICKS(200));
+        long rightDist = ultrasonic.read();
+
+        Serial.print("Left: ");
+        Serial.print(leftDist);
+        Serial.print(" cm | Center: ");
+        Serial.print(centerDist);
+        Serial.print(" cm | Right: ");
+        Serial.print(rightDist);
+        Serial.println(" cm");
+
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
