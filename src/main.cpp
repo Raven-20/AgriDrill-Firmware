@@ -26,46 +26,6 @@ TaskHandle_t SystemMonitorTaskHandle;
 TaskHandle_t EncoderTaskHandle;
 
 
-Ultrasonic ultrasonic(5, 18);
-Servo scanServo;
-
-int leftAngle = 45;
-int centerAngle = 90;
-int rightAngle = 135;
-
-// ================= SENSOR TASK =================
-void SensorTaskFunction(void *pvParameters)
-{
-    ultrasonic.begin();
-    scanServo.attach(19);
-
-    while (true)
-    {
-        scanServo.write(leftAngle);
-        vTaskDelay(pdMS_TO_TICKS(200));
-        long leftDist = ultrasonic.read();
-
-        scanServo.write(centerAngle);
-        vTaskDelay(pdMS_TO_TICKS(200));
-        long centerDist = ultrasonic.read();
-
-        scanServo.write(rightAngle);
-        vTaskDelay(pdMS_TO_TICKS(200));
-        long rightDist = ultrasonic.read();
-
-        Serial.print("Left: ");
-        Serial.print(leftDist);
-        Serial.print(" cm | Center: ");
-        Serial.print(centerDist);
-        Serial.print(" cm | Right: ");
-        Serial.print(rightDist);
-        Serial.println(" cm");
-        
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-
-
 // ================= ACTUATOR TASK =================
 void ActuatorTaskFunction(void *pvParameters)
 {

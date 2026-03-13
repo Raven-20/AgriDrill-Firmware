@@ -12,4 +12,7 @@
 #define ENCODER_A 34
 #define ENCODER_B 35
 
+// ================= LIMIT SWITCH =================
+#define LIMIT_SWITCH_PIN 34
+
 #endif

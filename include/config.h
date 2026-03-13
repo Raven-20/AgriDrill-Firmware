@@ -28,7 +28,13 @@
 #define ACTUATOR_RPWM 27
 #define ACTUATOR_LPWM 14
 #define ACT_EN 23
-#define LIMIT_SWITCH_PIN 12
+// #define LIMIT_SWITCH_PIN 16
+
+// ==================================================
+// Debounce time for limit switch (ms)
+// ==================================================
+#define LIMIT_SWITCH_DEBOUNCE_MS 10
+
 
 
 // ==================================================
