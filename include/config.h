@@ -28,7 +28,7 @@
 #define ACTUATOR_RPWM 27
 #define ACTUATOR_LPWM 14
 #define ACT_EN 23
-#define LIMIT_SWITCH_PIN 34
+#define LIMIT_SWITCH_PIN 12
 
 
 // ==================================================

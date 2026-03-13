@@ -7,6 +7,7 @@
 #include "ultrasonic.h"
 #include "pins.h"
 #include <ESP32Servo.h>
+#include "encoder.h"
 
 
 // ===== FUNCTION PROTOTYPES =====
@@ -22,6 +23,7 @@ TaskHandle_t ActuatorTaskHandle;
 TaskHandle_t StepperTaskHandle;
 TaskHandle_t CommunicationTaskHandle;
 TaskHandle_t SystemMonitorTaskHandle;
+TaskHandle_t EncoderTaskHandle;
 
 
 Ultrasonic ultrasonic(5, 18);
@@ -58,7 +60,7 @@ void SensorTaskFunction(void *pvParameters)
         Serial.print(" cm | Right: ");
         Serial.print(rightDist);
         Serial.println(" cm");
-
+        
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
@@ -123,6 +125,24 @@ void SystemMonitorTaskFunction(void *pvParameters)
     {
         Serial.println("[Core0] System Monitor Running");
         vTaskDelay(pdMS_TO_TICKS(3000));
+    }
+}
+
+// ================= SYSTEM MONITOR TASK =================
+void EncoderTask(void *pvParameters)
+{
+    encoder_init();
+
+    TickType_t lastWakeTime = xTaskGetTickCount();
+
+    while(true)
+    {
+        long count = encoder_getCount();
+
+        Serial.print("Encoder Count: ");
+        Serial.println(count);
+
+        vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(50));
     }
 }
 
@@ -208,6 +228,15 @@ void setup()
         1,
         &SystemMonitorTaskHandle,
         0);
+
+    xTaskCreatePinnedToCore(
+        EncoderTask,
+        "EncoderTask",
+        2048,
+        NULL,
+        1,
+        &EncoderTaskHandle,
+        0);    
 }
 
 void loop()
