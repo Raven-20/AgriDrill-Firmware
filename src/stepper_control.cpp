@@ -2,49 +2,26 @@
 #include <Stepper.h>
 #include "stepper_control.h"
 #include "config.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "system_state.h"
 
-// ===== STEPPER OBJECT =====
-Stepper magazineStepper(
-    STEPS_PER_REV,
+// ✅ ULN2003 uses 4 pins
+AccelStepper magazineStepper(
+    AccelStepper::FULL4WIRE,
     STEPPER_IN1,
     STEPPER_IN3,
     STEPPER_IN2,
     STEPPER_IN4
 );
 
-
-// ===== STEPPER TASK =====
 void StepperTask(void *pvParameters)
 {
-    magazineStepper.setSpeed(10);   // RPM
+    magazineStepper.setMaxSpeed(500);
+    magazineStepper.setSpeed(200);
 
-    int cycleCount = 0;
-
-    while (1)
+    while (true)
     {
-        if (cycleCount < 10)
-        {
-            Serial.print("Stepper Index Cycle: ");
-            Serial.println(cycleCount + 1);
-
-            Serial.println("Moving to next tray position...");
-
-            magazineStepper.step(STEPS_PER_CELL);
-
-            Serial.println("Position reached.");
-            Serial.println("----------------------");
-
-            cycleCount++;
-
-            vTaskDelay(pdMS_TO_TICKS(2000));
-        }
-        else
-        {
-            Serial.println("10 index cycles completed.");
-            vTaskDelay(pdMS_TO_TICKS(5000));
-        }
+        magazineStepper.runSpeed();  // 🔥 required
     }
 }
