@@ -1,70 +1,40 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
+#include "pins.h"
 
-// ==================================================
-// LEFT MOTOR (BTS7960)
-// ==================================================
-#define MOTOR_LEFT_RPWM 25
-#define MOTOR_LEFT_LPWM 13
+// ============================================================
+//  AgriDrill Firmware — config.h (FOR 3 BTS7960 SETUP)
+// ============================================================
 
 
-// ==================================================
-// RIGHT MOTOR (BTS7960)
-// ==================================================
-#define MOTOR_RIGHT_RPWM 26
-#define MOTOR_RIGHT_LPWM 17   
+// ── Drive Motion ─────────────────────────────────────────────
+#define DRIVE_SPEED_FWD         180
+#define DRIVE_SPEED_TURN        150
+#define MOTOR_RAMP_MS           200
 
 
-// ==================================================
-// ULTRASONIC SENSOR
-// ==================================================
-#define ULTRASONIC_TRIG 33
-#define ULTRASONIC_ECHO 32
+// ── Linear Actuator (Drilling Mechanism) ─────────────────────
+#define ACTUATOR_EXTEND_MS      2500
+#define ACTUATOR_RETRACT_MS     2500
+#define ACTUATOR_DWELL_MS       500
 
 
-// ==================================================
-// LINEAR ACTUATOR (BTS7960)
-// ==================================================
-#define ACTUATOR_RPWM 27
-#define ACTUATOR_LPWM 14
-#define ACT_EN 23
-// #define LIMIT_SWITCH_PIN 16
-
-// ==================================================
-// Debounce time for limit switch (ms)
-// ==================================================
-#define LIMIT_SWITCH_DEBOUNCE_MS 10
+// ── Stepper / Tray Cycle ─────────────────────────────────────
+#define STEPPER_STEPS_PER_REV   200
+#define STEPPER_RPM             60
+#define TRAY_TOTAL_SLOTS        5
+#define TRAY_STEPS_PER_SLOT     40
 
 
-
-// ==================================================
-// STEPPER MOTOR (ULN2003)
-// ==================================================
-#define STEPPER_IN1 18
-#define STEPPER_IN2 19
-#define STEPPER_IN3 21
-#define STEPPER_IN4 22
-
-#define STEPS_PER_REV 2048
-#define STEPS_PER_CELL 256
+// ── Ultrasonic Sensor ────────────────────────────────────────
+#define ULTRASONIC_TIMEOUT_US   30000
+#define OBSTACLE_STOP_CM        20
 
 
-// ==================================================
-// PWM SETTINGS
-// ==================================================
-#define PWM_FREQ 20000
-#define PWM_RESOLUTION 8
+// ── Servo Settings ───────────────────────────────────────────
+#define SERVO_DEFAULT_ANGLE     90
+#define SERVO_LEFT_ANGLE        45
+#define SERVO_RIGHT_ANGLE       135
 
 
-// ==================================================
-// PWM CHANNELS
-// ==================================================
-#define LEFT_RPWM_CHANNEL 0
-#define LEFT_LPWM_CHANNEL 1
-#define RIGHT_RPWM_CHANNEL 2
-#define RIGHT_LPWM_CHANNEL 3
-#define ACT_RPWM_CHANNEL 4
-#define ACT_LPWM_CHANNEL 5
-
-
-#endif
+// ── Serial Debug ─────────────────────────────────────────────
+#define SERIAL_DEBUG_BAUD       115200
